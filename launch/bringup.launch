@@ -1,0 +1,15 @@
+<launch>
+  <!-- Connect to the Teensy -->
+  <node pkg="rosserial_python" type="serial_node.py" name="rtx_controller" output="screen">
+    <param name="port" value="/dev/teensy"/>
+    <param name="baud" value="57600"/>
+  </node>
+
+  <!-- Convert /cmd_vel into motor/control values -->
+  <node pkg="source" type="cmd_vel_bridge.py" name="cmd_vel_bridge" output="screen"/>
+
+  <!-- Receive WebSocket commands and publish them as /cmd_vel -->
+  <node pkg="source" type="ws_cmd_vel.py" name="ws_cmd_vel" output="screen">
+    <param name="url" value="ws://10.42.0.99:9090"/>
+  </node>
+</launch>
