@@ -1,30 +1,64 @@
 demo_ws.
 
-Chain
-ws_server.py  →  ws_cmd_vel.py  →  cmd_vel_bridge.py  →  Teensy (serial)
+ROS workspace for controlling a robot over WebSocket and serial.
+
+Flow
+ws_server.py  →  ws_cmd_vel.py  →  /cmd_vel  →  cmd_vel_bridge.py  →  /control  →  Teensy (serial)
 
 Scripts (src/scripts/)
 
 ws_server.py
-  Sends velocity commands over WebSocket at 10 Hz.
-  Not a ROS node. Standalone Python.
+  Keyboard controller.
+  Sends JSON velocity commands over WebSocket.
+  Uses WASD keys:
+    W = forward
+    S = backward
+    A = left
+    D = right
+    X = stop
+    Q = quit
 
 ws_cmd_vel.py
-  Receives WebSocket JSON, publishes to /cmd_vel as a Twist message.
   ROS node.
+  Connects to the WebSocket server and publishes incoming commands to /cmd_vel as a geometry_msgs/Twist.
 
 cmd_vel_bridge.py
-  Subscribes to /cmd_vel, sends speed and steering to the Teensy over serial.
   ROS node.
+  Subscribes to /cmd_vel.
+  Converts commands to steering and throttle values.
+  Publishes the result to /control as a Float32MultiArray for the Teensy.
+
+Launch
+
+roslaunch source bringup.launch
+
+  Starts:
+    - rosserial_python serial node for the Teensy
+    - cmd_vel_bridge.py
+    - ws_cmd_vel.py
+
+  Serial setup:
+    port: /dev/teensy
+    baud: 57600
 
 Topics
-  /cmd_vel   { tye : geometry_msgs/Twist   
-  published by: ws_cmd_vel subscriber by : cmd_vel_bridge }
 
+  /cmd_vel   type: geometry_msgs/Twist
+  /control   type: std_msgs/Float32MultiArray
 
-dependencies : rospy , geometry_msgs, std_msgs
+Dependencies
+  rospy
+  geometry_msgs
+  std_msgs
+  rosserial_python
 
-Running
-  Terminal 1: python3 src/scripts/ws_server.py
-  Terminal 2: python3 src/scripts/ws_cmd_vel.py
-  Terminal 3: python3 src/scripts/cmd_vel_bridge.py
+@copilot 
+
+Important
+  The WebSocket URL is configured in the launch file and may differ from the default value used by ws_server.py.
+  Check that the WebSocket endpoint matches the actual server you are connecting to.
+
+Manual debugging
+  thon3 src/scripts/ws_server.py
+  python3 src/scripts/ws_cmd_vel.py
+  python3 src/scripts/cmd_vel_bridge.pypy
