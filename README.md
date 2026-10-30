@@ -57,7 +57,7 @@ Dependencies
 Important
   The WebSocket URL is configured in the launch file and may differ from the default value used by ws_server.py.
   Check that the WebSocket endpoint matches the actual server you are connecting to.
-
+  
 Manual debugging
   thon3 src/scripts/ws_server.py
   python3 src/scripts/ws_cmd_vel.py
