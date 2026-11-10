@@ -1,2 +1,2 @@
-
+ldlidar_stl_ros:source
 -DCATKIN_DEVEL_PREFIX=/root/demo_ws/devel -DCMAKE_INSTALL_PREFIX=/root/demo_ws/install -G Unix Makefiles

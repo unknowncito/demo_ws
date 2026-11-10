@@ -146,6 +146,8 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/root/demo_ws/build/gtest/cmake_install.cmake")
+  include("/root/demo_ws/build/ldlidar_stl_ros/cmake_install.cmake")
+  include("/root/demo_ws/build/source/cmake_install.cmake")
 
 endif()
 
